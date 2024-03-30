@@ -4,7 +4,7 @@ let socket: WebSocket;
 let response: Response;
 
 export const handler: Handlers = {
-  GET(req) {
+  GET: (req) => {
     // Check if the request is attempting to upgrade to WebSocket
     if (req.headers.get("upgrade") === "websocket") {
       return handleWebSocket(req);
@@ -16,18 +16,17 @@ export const handler: Handlers = {
 };
 
 // Define handleMessage as an async function
-function handleMessage(): Promise<string> {
-    return new Promise((resolve) => {
-        // Set a timeout to resolve the promise after 1 second
-        setTimeout(() => {
-            resolve('Promise resolved');
-        }, 1000);
-    });
-}
+const handleMessage = (): Promise<string> => {
+  return new Promise((resolve) => {
+    // Set a timeout to resolve the promise after 1 second
+    setTimeout(() => {
+      resolve('Promise resolved');
+    }, 1000);
+  });
+};
 
 // Function to handle WebSocket connections
-function handleWebSocket(request: Request): Promise<Response> {
-
+const handleWebSocket = (request: Request): Promise<Response> => {
   const obj = Deno.upgradeWebSocket(request);
   socket = obj.socket;
   response = obj.response;
@@ -48,4 +47,4 @@ function handleWebSocket(request: Request): Promise<Response> {
 
   // Return the response to finalize the WebSocket upgrade
   return Promise.resolve(response);
-}
+};
