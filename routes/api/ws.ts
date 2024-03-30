@@ -36,7 +36,7 @@ function handleWebSocket(request: Request): Promise<Response> {
 
   // on socket message, call the async function
   socket.onmessage = async (event) => {
-    console.log("Received message from client:", event.data);
+    console.log("📥 📥 📥 Received message from client:", event.data);
     // Echo the received message back to the client
     const message = await handleMessage();
     socket.send(`🦄 🦄 🦄 Server received: ${event.data} and ${message}`);
