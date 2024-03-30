@@ -1,5 +1,16 @@
 import { Handlers } from "$fresh/server.ts";
 
+import {
+  BedrockRuntimeClient,
+  InvokeModelCommand,
+} from "https://esm.sh/@aws-sdk/client-bedrock-runtime";
+
+import { load } from "https://deno.land/std@0.221.0/dotenv/mod.ts";
+
+const env = await load();
+const accessKeyId = env["AWS_ACCESS_KEY"];
+const secretAccessKey = env["AWS_SECRET_KEY"];
+
 let socket: WebSocket;
 let response: Response;
 
