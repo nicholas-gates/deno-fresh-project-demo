@@ -12,8 +12,10 @@ import * as $countdown from "./routes/countdown.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $search from "./routes/search.tsx";
+import * as $ws_form from "./routes/ws-form.tsx";
 import * as $Countdown from "./islands/Countdown.tsx";
 import * as $Counter from "./islands/Counter.tsx";
+import * as $WebSocketForm from "./islands/WebSocketForm.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -28,10 +30,12 @@ const manifest = {
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/search.tsx": $search,
+    "./routes/ws-form.tsx": $ws_form,
   },
   islands: {
     "./islands/Countdown.tsx": $Countdown,
     "./islands/Counter.tsx": $Counter,
+    "./islands/WebSocketForm.tsx": $WebSocketForm,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;
