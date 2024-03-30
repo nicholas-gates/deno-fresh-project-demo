@@ -87,6 +87,7 @@ const invokeModel = async (/*input: string*/): Promise<string> => {
     "body":
       '{"prompt":"What is the capital of Japan? Answer with just the city name. Don\'t add anything else or put it in a sentence.","max_gen_len":512,"temperature":0.5,"top_p":0.9}',
   };
+  
   let command = new InvokeModelCommand(input);
   let response = await client.send(command);
   let responseJson = JSON.parse(new TextDecoder().decode(response.body));
