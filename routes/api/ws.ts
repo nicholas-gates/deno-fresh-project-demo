@@ -15,13 +15,20 @@ export const handler: Handlers = {
 const handleMessage = (event: MessageEvent)  => {
   console.log("Received message from client:", event.data);
   // Echo the received message back to the client
-  socket.send(`Server received: ${event.data}`);
+    socket.send(`🦄 🦄 🦄 Server received: ${event.data}`);
 }
 
+let socket: WebSocket;
+let response: Response;
+
 // Function to handle WebSocket connections
-async function handleWebSocket(request: Request): Promise<Response> {
+function handleWebSocket(request: Request): Promise<Response> {
   // Upgrade the HTTP request to a WebSocket connection
-  const { socket, response } = Deno.upgradeWebSocket(request);
+  // { socket, response } = Deno.upgradeWebSocket(request);
+
+  const obj = Deno.upgradeWebSocket(request);
+  socket = obj.socket;
+  response = obj.response;
 
   socket.onopen = () => console.log("WebSocket connection opened.");
 
