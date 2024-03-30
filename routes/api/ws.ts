@@ -39,6 +39,7 @@ export const handler: Handlers = {
 // Function to handle WebSocket connections
 const handleWebSocket = (request: Request): Promise<Response> => {
   const obj = Deno.upgradeWebSocket(request);
+  console.log("🔌 🔌 🔌 Upgrading to WebSocket connection");
   socket = obj.socket;
   response = obj.response;
 
@@ -62,6 +63,7 @@ const handleWebSocket = (request: Request): Promise<Response> => {
 
 // Define handleMessage as an async function
 const handleMessage = async (): Promise<string> => {
+  console.log("🔵 🔵 🔵 handleMessage ...");
   // return new Promise((resolve) => {
   //   // Set a timeout to resolve the promise after 1 second
   //   setTimeout(() => {
@@ -73,6 +75,7 @@ const handleMessage = async (): Promise<string> => {
 
 // This function calls the BedrockRuntimeClient to invoke the model. It returns the response from the model which is a string.
 const invokeModel = async (/*input: string*/): Promise<string> => {
+  console.log("🔵 🔵 🔵 invokeModel ...");
   // const command = new InvokeModelCommand({
   //   ModelName: "my-model",
   //   Input: input,
@@ -87,7 +90,7 @@ const invokeModel = async (/*input: string*/): Promise<string> => {
     "body":
       '{"prompt":"What is the capital of Japan? Answer with just the city name. Don\'t add anything else or put it in a sentence.","max_gen_len":512,"temperature":0.5,"top_p":0.9}',
   };
-  
+
   let command = new InvokeModelCommand(input);
   let response = await client.send(command);
   let responseJson = JSON.parse(new TextDecoder().decode(response.body));

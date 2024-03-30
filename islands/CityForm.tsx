@@ -9,7 +9,8 @@ function CityForm() {
 
     useEffect(() => {
         // Initialize WebSocket connection
-        const webSocket = new WebSocket("ws://deno-fresh-project-demo-086adyegr5ws.deno.dev/api/ws");
+        // const webSocket = new WebSocket("ws://deno-fresh-project-demo-086adyegr5ws.deno.dev/api/ws");
+        const webSocket = new WebSocket("ws://localhost:8000/api/ws");
 
         webSocket.onmessage = (event) => {
             // Handle messages received from the server
@@ -24,7 +25,7 @@ function CityForm() {
         webSocket.onerror = (error) => {
             console.error("WebSocket error: ", error);
         };
-        
+
         webSocket.onclose = () => {
             console.log("WebSocket connection closed");
         };
@@ -56,7 +57,7 @@ function CityForm() {
                     type="text"
                     value={cityName}
                     onChange={(e) => setCityName(e.currentTarget.value)}
-                    placeholder="Enter a Capital City of a Country"
+                    placeholder="Enter a Country to get the Capital"
                 />
                 <button type="submit">Submit</button>
             </form>
