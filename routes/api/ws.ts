@@ -12,7 +12,17 @@ const accessKeyId = env["AWS_ACCESS_KEY"];
 const secretAccessKey = env["AWS_SECRET_KEY"];
 
 let socket: WebSocket;
+
 let response: Response;
+const config = {
+  region: "us-east-1",
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
+};
+
+const client = new BedrockRuntimeClient(config);
 
 export const handler: Handlers = {
   GET: (req) => {
