@@ -28,7 +28,7 @@ export default function Home() {
           <a href="/countdown">🔗 Countdown</a><br/>
           <a href="/about">🔗 About</a><br />
           <a href="/greet/Nicholas">🔗 Greet</a><br/>
-
+          <a href="/ws-form">🔗 Web Socket</a><br />
         </div>
       </div>
     </div>
