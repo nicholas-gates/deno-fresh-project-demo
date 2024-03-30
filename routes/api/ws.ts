@@ -36,16 +36,6 @@ export const handler: Handlers = {
   },
 };
 
-// Define handleMessage as an async function
-const handleMessage = (): Promise<string> => {
-  return new Promise((resolve) => {
-    // Set a timeout to resolve the promise after 1 second
-    setTimeout(() => {
-      resolve('Promise resolved');
-    }, 1000);
-  });
-};
-
 // Function to handle WebSocket connections
 const handleWebSocket = (request: Request): Promise<Response> => {
   const obj = Deno.upgradeWebSocket(request);
@@ -68,4 +58,42 @@ const handleWebSocket = (request: Request): Promise<Response> => {
 
   // Return the response to finalize the WebSocket upgrade
   return Promise.resolve(response);
+};
+
+// Define handleMessage as an async function
+const handleMessage = async (): Promise<string> => {
+  // return new Promise((resolve) => {
+  //   // Set a timeout to resolve the promise after 1 second
+  //   setTimeout(() => {
+  //     resolve("Promise resolved");
+  //   }, 1000);
+  // });
+  return await invokeModel();
+};
+
+// This function calls the BedrockRuntimeClient to invoke the model. It returns the response from the model which is a string.
+const invokeModel = async (/*input: string*/): Promise<string> => {
+  // const command = new InvokeModelCommand({
+  //   ModelName: "my-model",
+  //   Input: input,
+  // });
+
+  // const response = await client.send(command);
+  // return response.Output;
+  let input = {
+    "modelId": "meta.llama2-70b-chat-v1",
+    "contentType": "application/json",
+    "accept": "application/json",
+    "body":
+      '{"prompt":"What is the capital of Japan? Answer with just the city name. Don\'t add anything else or put it in a sentence.","max_gen_len":512,"temperature":0.5,"top_p":0.9}',
+  };
+  let command = new InvokeModelCommand(input);
+  let response = await client.send(command);
+  let responseJson = JSON.parse(new TextDecoder().decode(response.body));
+  let capitalCity = responseJson.generation;
+
+  // remove all whitespace and new lines
+  capitalCity = capitalCity.replace(/\s/g, "");
+  console.log(`🏛️ 🏛️ 🏛️ -${capitalCity}-`);
+  return capitalCity;
 };
