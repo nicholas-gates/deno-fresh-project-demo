@@ -1,6 +1,6 @@
 /**
  * This is the home page of my app. It's based on the Fresh template and uses Preact for rendering.
- * The runtime is Deno.
+ * The runtime is Deno. Styling is Tailwind CSS.
  */
 import { useSignal } from "@preact/signals";
 import Counter from "../islands/Counter.tsx";
