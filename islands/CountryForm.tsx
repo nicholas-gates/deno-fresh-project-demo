@@ -28,14 +28,16 @@ function CountryForm() {
   const handleSubmit = (event: h.JSX.TargetedEvent<HTMLFormElement, Event>) => {
     event.preventDefault();
 
-    // extract the country name from the state
-    // const countryName = countryName;
-
     console.log("handleSubmit Country name: ", countryName);
 
     // Using the state directly instead of event.currentTarget
     if (ws instanceof WebSocket && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify(countryName));
+
+      ws.send(JSON.stringify({
+        type: "countryName",
+        value: countryName
+      }));
+
       console.log(`Form submitted with country name: ${countryName}`);
     } else {
       console.error("WebSocket is not open. Cannot send message.");

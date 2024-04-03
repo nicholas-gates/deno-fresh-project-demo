@@ -45,23 +45,20 @@ const handleWebSocket = (request: Request): Promise<Response> => {
 
   socket.onopen = () => console.log("WebSocket connection opened.");
 
-  let countryName: string = "";
-
   // on socket message, call the async function
   socket.onmessage = async (event) => {
     console.log("📥 📥 📥 Received message from client:", event.data);
 
-    // countryName = event.data.countryName;
     // Parse the JSON string from the client to access its properties
-    // const messageData = JSON.parse(event.data);
-    // const messageData = event.data;
+    const messageData = JSON.parse(event.data);
     // countryName = messageData.countryName;
-    countryName = event.data;
 
-    console.log("🔵 🔵 🔵 Country Name: ", countryName);
+    // desctructure the typa and value from the messageData
+    const { type, value } = messageData;
+
     // Echo the received message back to the client
-    const capitalCity = await handleMessage(countryName);
-    socket.send(`🦄 🦄 🦄 The capital of ${countryName} is ${capitalCity}`);
+    const wsResponse = await handleMessage(type, value);
+    socket.send(wsResponse);
   };
 
   socket.onerror = (event) => console.error("WebSocket error:", event);
@@ -73,22 +70,45 @@ const handleWebSocket = (request: Request): Promise<Response> => {
 };
 
 // Define handleMessage as an async function
-const handleMessage = async (countryName: string): Promise<string> => {
+const handleMessage = async (type: string, value: string): Promise<string> => {
   console.log("🔵 🔵 🔵 handleMessage ...");
 
-  return await invokeModel(countryName);
+  // switch on the type of message received
+  switch (type) {
+    case "countryName":
+      return await getCapitalCity(value);
+    default:
+      return "Invalid message type received";
+  }
+
 };
 
-// This function calls the BedrockRuntimeClient to invoke the model. It returns the response from the model which is a string.
-const invokeModel = async (
-  countryName: string, /*input: string*/
-): Promise<string> => {
-  console.log("🔵 🔵 🔵 invokeModel ...");
-
-  // const countryName = "France"; // Replace "Country" with the actual country name
+const getCapitalCity = async (countryName: string): Promise<string> => {
+  console.log("🔵 🔵 🔵 Country Name: ", countryName);
 
   const prompt =
     `What is the capital of ${countryName} ? Answer with just the city name. Don\'t add anything else or put it in a sentence.`;
+
+  const response = await invokeModel(prompt);
+
+  let capitalCity = response.generation;
+
+  // remove all whitespace and new lines
+  capitalCity = capitalCity.replace(/\s/g, "");
+
+  console.log(`AI capitalCity === 🏛️ 🏛️ 🏛️  -${capitalCity}-`);
+  return `🦄 🦄 🦄 The capital of ${countryName} is ${capitalCity}`;
+}
+
+interface AiResponse {
+  generation: string;
+}
+
+// This function calls the BedrockRuntimeClient to invoke the model. It returns the response from the model which is a string.
+const invokeModel = async (
+  prompt: string, /*input: string*/
+): Promise<AiResponse> => {
+  console.log("🔵 🔵 🔵 invokeModel ...");
 
   console.log(`prompt ==== 🏛️ 🏛️ 🏛️ -${prompt}-`);
 
@@ -110,10 +130,7 @@ const invokeModel = async (
   const response = await client.send(command);
   const responseJson = JSON.parse(new TextDecoder().decode(response.body));
 
-  let capitalCity = responseJson.generation;
-  // remove all whitespace and new lines
-  capitalCity = capitalCity.replace(/\s/g, "");
-
-  console.log(`AI capitalCity === 🏛️ 🏛️ 🏛️ 2  -${capitalCity}-`);
-  return capitalCity;
+  return responseJson;
 };
+
+
