@@ -1,4 +1,4 @@
-import { invokeModel } from "../ws.ts";
+import { invokeModel } from "../clients/invokeModel.ts";
 
 export const getCapitalCity = async (countryName: string): Promise<string> => {
   console.log("🔵 🔵 🔵 Country Name: ", countryName);

@@ -5,6 +5,7 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $about from "./routes/about.tsx";
+import * as $api_clients_invokeModel from "./routes/api/clients/invokeModel.ts";
 import * as $api_handlers_getCapitalCity from "./routes/api/handlers/getCapitalCity.ts";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $api_random_uuid from "./routes/api/random-uuid.ts";
@@ -26,6 +27,7 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
     "./routes/about.tsx": $about,
+    "./routes/api/clients/invokeModel.ts": $api_clients_invokeModel,
     "./routes/api/handlers/getCapitalCity.ts": $api_handlers_getCapitalCity,
     "./routes/api/joke.ts": $api_joke,
     "./routes/api/random-uuid.ts": $api_random_uuid,
