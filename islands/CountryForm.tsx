@@ -44,16 +44,19 @@ function CountryForm() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="flex flex-col items-left">
         <input
           type="text"
           value={countryName}
           onChange={(e) => setCountryName(e.currentTarget.value)}
           placeholder="Enter a Country to get the Capital"
+          className="p-2 m-2 border border-gray-300 rounded"
         />
-        <button type="submit">Submit</button>
+        <button type="submit" className="p-2 bg-blue-500 text-white rounded">
+          Submit
+        </button>
       </form>
-      {response && <div>{response}</div>}
+      {response && <div className="mt-4">{response}</div>}
     </div>
   );
 }
