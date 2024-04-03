@@ -63,4 +63,4 @@ const handleMessage = async (type: string, value: string): Promise<string> => {
       return "Invalid message type received";
   }
 
-};  
+};

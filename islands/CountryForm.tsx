@@ -1,47 +1,22 @@
 import { h } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
+import useWebSocket from "../utils/useWebSocket.ts";
 
 function CountryForm() {
-  // Corrected the function name for setting country name
-  const [countryName, setCountryName] = useState<string>("");
-
-  const [response, setResponse] = useState("");
-  const [ws, setWs] = useState<WebSocket | null>(null);
-
-  useEffect(() => {
-    const webSocket = new WebSocket("ws://localhost:8000/api/ws");
-
-    webSocket.onmessage = (event) => {
-      console.log("Message from server ", event.data);
-      setResponse(event.data);
-    };
-
-    webSocket.onopen = () => console.log("WebSocket connection established");
-    webSocket.onerror = (error) => console.error("WebSocket error: ", error);
-    webSocket.onclose = () => console.log("WebSocket connection closed");
-
-    setWs(webSocket);
-
-    return () => webSocket.close();
-  }, []);
+  const [countryName, setCountryName] = useState("");
+  const { response, sendMessage } = useWebSocket("ws://localhost:8000/api/ws");
 
   const handleSubmit = (event: h.JSX.TargetedEvent<HTMLFormElement, Event>) => {
     event.preventDefault();
 
     console.log("handleSubmit Country name: ", countryName);
 
-    // Using the state directly instead of event.currentTarget
-    if (ws instanceof WebSocket && ws.readyState === WebSocket.OPEN) {
+    sendMessage({
+      type: "countryName",
+      value: countryName,
+    });
 
-      ws.send(JSON.stringify({
-        type: "countryName",
-        value: countryName
-      }));
-
-      console.log(`Form submitted with country name: ${countryName}`);
-    } else {
-      console.error("WebSocket is not open. Cannot send message.");
-    }
+    console.log(`Form submitted with country name: ${countryName}`);
   };
 
   return (
