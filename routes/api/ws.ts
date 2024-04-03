@@ -45,12 +45,23 @@ const handleWebSocket = (request: Request): Promise<Response> => {
 
   socket.onopen = () => console.log("WebSocket connection opened.");
 
+  let countryName: string = "";
+
   // on socket message, call the async function
   socket.onmessage = async (event) => {
     console.log("📥 📥 📥 Received message from client:", event.data);
+
+    // countryName = event.data.countryName;
+    // Parse the JSON string from the client to access its properties
+    // const messageData = JSON.parse(event.data);
+    // const messageData = event.data;
+    // countryName = messageData.countryName;
+    countryName = event.data;
+
+    console.log("🔵 🔵 🔵 Country Name: ", countryName);
     // Echo the received message back to the client
-    const message = await handleMessage();
-    socket.send(`🦄 🦄 🦄 Server received: ${event.data} and ${message}`);
+    const capitalCity = await handleMessage(countryName);
+    socket.send(`🦄 🦄 🦄 The capital of ${countryName} is ${capitalCity}`);
   };
 
   socket.onerror = (event) => console.error("WebSocket error:", event);
@@ -62,42 +73,47 @@ const handleWebSocket = (request: Request): Promise<Response> => {
 };
 
 // Define handleMessage as an async function
-const handleMessage = async (): Promise<string> => {
+const handleMessage = async (countryName: string): Promise<string> => {
   console.log("🔵 🔵 🔵 handleMessage ...");
-  // return new Promise((resolve) => {
-  //   // Set a timeout to resolve the promise after 1 second
-  //   setTimeout(() => {
-  //     resolve("Promise resolved");
-  //   }, 1000);
-  // });
-  return await invokeModel();
+
+  return await invokeModel(countryName);
 };
 
 // This function calls the BedrockRuntimeClient to invoke the model. It returns the response from the model which is a string.
-const invokeModel = async (/*input: string*/): Promise<string> => {
+const invokeModel = async (
+  countryName: string, /*input: string*/
+): Promise<string> => {
   console.log("🔵 🔵 🔵 invokeModel ...");
-  // const command = new InvokeModelCommand({
-  //   ModelName: "my-model",
-  //   Input: input,
-  // });
 
-  // const response = await client.send(command);
-  // return response.Output;
-  let input = {
+  // const countryName = "France"; // Replace "Country" with the actual country name
+
+  const prompt =
+    `What is the capital of ${countryName} ? Answer with just the city name. Don\'t add anything else or put it in a sentence.`;
+
+  console.log(`prompt ==== 🏛️ 🏛️ 🏛️ -${prompt}-`);
+
+  const body = JSON.stringify({
+    prompt: prompt,
+    max_gen_len: 512,
+    temperature: 0.5,
+    top_p: 0.9,
+  });
+
+  const input = {
     "modelId": "meta.llama2-70b-chat-v1",
     "contentType": "application/json",
     "accept": "application/json",
-    "body":
-      '{"prompt":"What is the capital of Japan? Answer with just the city name. Don\'t add anything else or put it in a sentence.","max_gen_len":512,"temperature":0.5,"top_p":0.9}',
+    "body": body,
   };
 
-  let command = new InvokeModelCommand(input);
-  let response = await client.send(command);
-  let responseJson = JSON.parse(new TextDecoder().decode(response.body));
-  let capitalCity = responseJson.generation;
+  const command = new InvokeModelCommand(input);
+  const response = await client.send(command);
+  const responseJson = JSON.parse(new TextDecoder().decode(response.body));
 
+  let capitalCity = responseJson.generation;
   // remove all whitespace and new lines
   capitalCity = capitalCity.replace(/\s/g, "");
-  console.log(`🏛️ 🏛️ 🏛️ -${capitalCity}-`);
+
+  console.log(`AI capitalCity === 🏛️ 🏛️ 🏛️ 2  -${capitalCity}-`);
   return capitalCity;
 };

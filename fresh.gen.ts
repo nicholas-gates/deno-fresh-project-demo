@@ -8,15 +8,15 @@ import * as $about from "./routes/about.tsx";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $api_random_uuid from "./routes/api/random-uuid.ts";
 import * as $api_ws from "./routes/api/ws.ts";
-import * as $city from "./routes/city.tsx";
 import * as $countdown from "./routes/countdown.tsx";
+import * as $country from "./routes/country.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $search from "./routes/search.tsx";
 import * as $ws_form from "./routes/ws-form.tsx";
-import * as $CityForm from "./islands/CityForm.tsx";
 import * as $Countdown from "./islands/Countdown.tsx";
 import * as $Counter from "./islands/Counter.tsx";
+import * as $CountryForm from "./islands/CountryForm.tsx";
 import * as $WebSocketForm from "./islands/WebSocketForm.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
@@ -28,17 +28,17 @@ const manifest = {
     "./routes/api/joke.ts": $api_joke,
     "./routes/api/random-uuid.ts": $api_random_uuid,
     "./routes/api/ws.ts": $api_ws,
-    "./routes/city.tsx": $city,
     "./routes/countdown.tsx": $countdown,
+    "./routes/country.tsx": $country,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
     "./routes/search.tsx": $search,
     "./routes/ws-form.tsx": $ws_form,
   },
   islands: {
-    "./islands/CityForm.tsx": $CityForm,
     "./islands/Countdown.tsx": $Countdown,
     "./islands/Counter.tsx": $Counter,
+    "./islands/CountryForm.tsx": $CountryForm,
     "./islands/WebSocketForm.tsx": $WebSocketForm,
   },
   baseUrl: import.meta.url,

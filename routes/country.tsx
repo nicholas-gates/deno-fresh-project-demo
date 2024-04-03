@@ -1,12 +1,12 @@
 // File: routes/city.tsx
 // import { h } from "preact";
-import CityForm from "../islands/CityForm.tsx";
+import CountryForm from "../islands/CountryForm.tsx";
 
 export default function City() {
   return (
     <div>
-      <h1>Submit Country Name</h1>
-      <CityForm />
+      <h1>AI Country Name</h1>
+      <CountryForm />
     </div>
   );
 }
