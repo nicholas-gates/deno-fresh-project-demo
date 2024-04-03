@@ -7,6 +7,8 @@ import {
 
 import { load } from "https://deno.land/std@0.221.0/dotenv/mod.ts";
 
+import { getCapitalCity } from "./handlers/getCapitalCity.ts";
+
 const env = await load();
 const accessKeyId = env["AWS_ACCESS_KEY"];
 const secretAccessKey = env["AWS_SECRET_KEY"];
@@ -83,29 +85,12 @@ const handleMessage = async (type: string, value: string): Promise<string> => {
 
 };
 
-const getCapitalCity = async (countryName: string): Promise<string> => {
-  console.log("🔵 🔵 🔵 Country Name: ", countryName);
-
-  const prompt =
-    `What is the capital of ${countryName} ? Answer with just the city name. Don\'t add anything else or put it in a sentence.`;
-
-  const response = await invokeModel(prompt);
-
-  let capitalCity = response.generation;
-
-  // remove all whitespace and new lines
-  capitalCity = capitalCity.replace(/\s/g, "");
-
-  console.log(`AI capitalCity === 🏛️ 🏛️ 🏛️  -${capitalCity}-`);
-  return `🦄 🦄 🦄 The capital of ${countryName} is ${capitalCity}`;
-}
-
 interface AiResponse {
   generation: string;
 }
 
 // This function calls the BedrockRuntimeClient to invoke the model. It returns the response from the model which is a string.
-const invokeModel = async (
+export const invokeModel = async (
   prompt: string, /*input: string*/
 ): Promise<AiResponse> => {
   console.log("🔵 🔵 🔵 invokeModel ...");
