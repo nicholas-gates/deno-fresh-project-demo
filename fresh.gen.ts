@@ -5,6 +5,7 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $about from "./routes/about.tsx";
+import * as $ai_wine_chat from "./routes/ai-wine-chat.tsx";
 import * as $api_clients_invokeModel from "./routes/api/clients/invokeModel.ts";
 import * as $api_handlers_getCapitalCity from "./routes/api/handlers/getCapitalCity.ts";
 import * as $api_joke from "./routes/api/joke.ts";
@@ -16,6 +17,7 @@ import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $search from "./routes/search.tsx";
 import * as $ws_form from "./routes/ws-form.tsx";
+import * as $ChatUi from "./islands/ChatUi.tsx";
 import * as $Countdown from "./islands/Countdown.tsx";
 import * as $Counter from "./islands/Counter.tsx";
 import * as $CountryForm from "./islands/CountryForm.tsx";
@@ -27,6 +29,7 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
     "./routes/about.tsx": $about,
+    "./routes/ai-wine-chat.tsx": $ai_wine_chat,
     "./routes/api/clients/invokeModel.ts": $api_clients_invokeModel,
     "./routes/api/handlers/getCapitalCity.ts": $api_handlers_getCapitalCity,
     "./routes/api/joke.ts": $api_joke,
@@ -40,6 +43,7 @@ const manifest = {
     "./routes/ws-form.tsx": $ws_form,
   },
   islands: {
+    "./islands/ChatUi.tsx": $ChatUi,
     "./islands/Countdown.tsx": $Countdown,
     "./islands/Counter.tsx": $Counter,
     "./islands/CountryForm.tsx": $CountryForm,

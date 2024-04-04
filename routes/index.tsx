@@ -36,6 +36,8 @@ export default function Home() {
           <br />
           <a href="/country">🔗 AI Country Form</a>
           <br />
+          <a href="/ai-wine-chat">🔗 AI Wine Chat</a>
+          <br />
         </div>
       </div>
     </div>
