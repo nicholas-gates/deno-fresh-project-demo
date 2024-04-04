@@ -4,13 +4,16 @@ import { WebSocketService } from "../utils/websocketUtil.ts";
 
 interface Message {
   author: "user" | "system";
+  type: string;
   content: string;
 }
 
 const ChatUI = () => {
   const [messages, setMessages] = useState<Message[]>([{
     author: "system",
-    content: "Type in your favorite wine",
+    type: "winePairing",
+    content:
+      "Type in your favorite wine and I'll recommend a good a pairing! 🍷",
   }]);
 
   const [input, setInput] = useState("");
@@ -24,7 +27,7 @@ const ChatUI = () => {
       (message: string) => {
         setMessages((
           msgs,
-        ) => [...msgs, { author: "system", content: message }]);
+        ) => [...msgs, { author: "system", type: "winePairing", content: message }]);
       },
     );
     setWsService(ws);
@@ -39,7 +42,7 @@ const ChatUI = () => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    setMessages((msgs) => [...msgs, { author: "user", content: input }]);
+    setMessages((msgs) => [...msgs, { author: "user", type: "winePairing", content: input }]);
     wsService?.sendMessage({ content: input });
     setInput("");
   };
@@ -48,7 +51,12 @@ const ChatUI = () => {
     <div class="chat-container max-w-xl mx-auto my-4 p-4 border rounded-lg shadow-lg bg-white">
       <ul class="chat-messages list-none overflow-auto max-h-80 p-2">
         {messages.map((msg, index) => (
-          <li key={index} class={`p-2 rounded-lg ${msg.author === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}>
+          <li
+            key={index}
+            class={`p-2 rounded-lg ${
+              msg.author === "user" ? "bg-blue-500 text-white" : "bg-gray-100"
+            }`}
+          >
             {msg.content}
           </li>
         ))}
@@ -61,7 +69,10 @@ const ChatUI = () => {
           placeholder="Type your message here..."
           class="chat-input flex-1 border p-2 rounded-l-lg"
         />
-        <button type="submit" class="send-button bg-blue-500 text-white p-2 rounded-r-lg">
+        <button
+          type="submit"
+          class="send-button bg-blue-500 text-white p-2 rounded-r-lg"
+        >
           Send
         </button>
       </form>

@@ -1,15 +1,11 @@
 import { Handlers } from "$fresh/server.ts";
 
 import { getCapitalCity } from "./handlers/getCapitalCity.ts";
+import { getWinePairing } from "./handlers/getWinePairing.ts";
 
 let socket: WebSocket;
 
 let response: Response;
-
-interface Message {
-  author: "user" | "system";
-  content: string;
-}
 
 export const handler: Handlers = {
   GET: (req) => {
@@ -22,6 +18,12 @@ export const handler: Handlers = {
     }
   },
 };
+
+interface Message {
+  author: "user" | "system";
+  type: string;
+  content: string;
+}
 
 // Function to handle WebSocket connections
 const handleWebSocket = (request: Request): Promise<Response> => {
@@ -40,12 +42,11 @@ const handleWebSocket = (request: Request): Promise<Response> => {
     const messageData: Message = JSON.parse(event.data);
     // countryName = messageData.countryName;
 
-    // desctructure the typa and value from the messageData
-    // const { type, value } = messageData;
+    // desctructure the typa and content from the messageData
+    // const { type, content } = messageData;
 
     // Echo the received message back to the client
-    const wsResponse = await handleMessage(type, value);
-    const wsResponse = await handleMessage(type, value);
+    const wsResponse = await handleMessage(messageData);
     socket.send(wsResponse);
   };
 
@@ -58,13 +59,15 @@ const handleWebSocket = (request: Request): Promise<Response> => {
 };
 
 // Define handleMessage as an async function
-const handleMessage = async (type: string, value: string): Promise<string> => {
-  console.log("🔵 🔵 🔵 handleMessage ...");
+const handleMessage = async ({ type, content }: Message): Promise<string> => {
+  console.log(`🔵 🔵 🔵 handleMessage ... ${type}, ${content}`);
 
   // switch on the type of message received
   switch (type) {
     case "countryName":
-      return await getCapitalCity(value);
+      return await getCapitalCity(content);
+    case "winePairing":
+      return await getWinePairing(content);
     default:
       return "Invalid message type received";
   }
