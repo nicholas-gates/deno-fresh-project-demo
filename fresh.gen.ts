@@ -10,6 +10,7 @@ import * as $api_clients_invokeModel from "./routes/api/clients/invokeModel.ts";
 import * as $api_handlers_getCapitalCity from "./routes/api/handlers/getCapitalCity.ts";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $api_random_uuid from "./routes/api/random-uuid.ts";
+import * as $api_ws_copy from "./routes/api/ai-chat.ts";
 import * as $api_ws from "./routes/api/ws.ts";
 import * as $countdown from "./routes/countdown.tsx";
 import * as $country from "./routes/country.tsx";
@@ -34,6 +35,7 @@ const manifest = {
     "./routes/api/handlers/getCapitalCity.ts": $api_handlers_getCapitalCity,
     "./routes/api/joke.ts": $api_joke,
     "./routes/api/random-uuid.ts": $api_random_uuid,
+    "./routes/api/ws copy.ts": $api_ws_copy,
     "./routes/api/ws.ts": $api_ws,
     "./routes/countdown.tsx": $countdown,
     "./routes/country.tsx": $country,

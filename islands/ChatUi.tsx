@@ -20,7 +20,7 @@ const ChatUI = () => {
   useEffect(() => {
     // Ensuring WebSocketService is instantiated correctly and setting the state
     const ws = new WebSocketService(
-      "ws://localhost:8000/api/ws",
+      "ws://localhost:8000/api/ai-chat",
       (message: string) => {
         setMessages((
           msgs,
