@@ -27,7 +27,7 @@ const client = new BedrockRuntimeClient(config);
 // This function calls the BedrockRuntimeClient to invoke the model. It returns the response from the model which is a string.
 
 export const invokeModel = async (
-  prompt: string
+  prompt: string,
 ): Promise<AiResponse> => {
   console.log("🔵 🔵 🔵 invokeModel ...");
 

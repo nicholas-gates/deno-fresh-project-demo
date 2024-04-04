@@ -21,7 +21,8 @@ export default function Page({ data }: PageProps<Data>) {
   const { results, query } = data;
   return (
     <div>
-      <a href="/">🔗 Home</a><br/>
+      <a href="/">🔗 Home</a>
+      <br />
       <form>
         <input type="text" name="q" value={query} />
         <button type="submit">Search</button>

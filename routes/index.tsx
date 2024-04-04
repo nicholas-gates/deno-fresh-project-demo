@@ -24,13 +24,18 @@ export default function Home() {
         </p>
         <Counter count={count} />
         <div class="my-4">
-          <a href="/search">🔗 Search</a><br/>
-          <a href="/countdown">🔗 Countdown</a><br/>
-          <a href="/about">🔗 About</a><br />
-          <a href="/greet/Nicholas">🔗 Greet</a><br/>
-          <a href="/ws-form">🔗 Web Socket</a><br />
-          <a href="/country">🔗 AI Country Form</a><br />
-
+          <a href="/search">🔗 Search</a>
+          <br />
+          <a href="/countdown">🔗 Countdown</a>
+          <br />
+          <a href="/about">🔗 About</a>
+          <br />
+          <a href="/greet/Nicholas">🔗 Greet</a>
+          <br />
+          <a href="/ws-form">🔗 Web Socket</a>
+          <br />
+          <a href="/country">🔗 AI Country Form</a>
+          <br />
         </div>
       </div>
     </div>
