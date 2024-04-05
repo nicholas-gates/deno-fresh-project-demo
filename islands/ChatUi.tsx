@@ -27,7 +27,11 @@ const ChatUI = () => {
       (message: string) => {
         setMessages((
           msgs,
-        ) => [...msgs, { author: "system", type: "winePairing", content: message }]);
+        ) => [...msgs, {
+          author: "system",
+          type: "winePairing",
+          content: message,
+        }]);
       },
     );
     setWsService(ws);
@@ -42,8 +46,17 @@ const ChatUI = () => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    setMessages((msgs) => [...msgs, { author: "user", type: "winePairing", content: input }]);
-    wsService?.sendMessage({ content: input });
+    const newMessage: Message = {
+      author: "user",
+      type: "winePairing",
+      content: input
+    };
+
+    setMessages((
+      msgs,
+    ) => [...msgs, newMessage]);
+
+    wsService?.sendMessage(newMessage);
     setInput("");
   };
 

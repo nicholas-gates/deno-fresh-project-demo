@@ -28,7 +28,7 @@ const client = new BedrockRuntimeClient(config);
 
 export const invokeModel = async (
   prompt: string,
-): Promise<AiResponse> => {
+): Promise<string> => {
   console.log("🔵 🔵 🔵 invokeModel ...");
 
   console.log(`prompt ==== 🏛️ 🏛️ 🏛️ -${prompt}-`);
@@ -51,5 +51,5 @@ export const invokeModel = async (
   const response = await client.send(command);
   const responseJson = JSON.parse(new TextDecoder().decode(response.body));
 
-  return responseJson;
+  return responseJson.generation;
 };

@@ -1,18 +1,21 @@
 import { invokeModel } from "../clients/invokeModel.ts";
 
 export const getWinePairing = async (wine: string): Promise<string> => {
-  console.log("🔵 🔵 🔵 Country Name: ", wine);
+  console.log("🍷 🍷 🍷 Wine: ", wine);
 
   const prompt =
-    `What is the capital of ${wine} ? Answer with just the city name. Don\'t add anything else or put it in a sentence.`;
+    `For an intimate dinner party, what appetizer pairs well with this ${wine}? Answer with a single appetizer and a brief description of it's ingredients and flavors.`;
 
   const response = await invokeModel(prompt);
+  console.log("🤖 🤖 🤖 invokeModel Response: ", response);
 
-  let capitalCity = response.generation;
+  let answer = response;
 
-  // remove all whitespace and new lines
-  capitalCity = capitalCity.replace(/\s/g, "");
+  // remove all whitespace from the beginning and the end of the string while preserving those between words.
+  answer = answer.trim();
+  // remove all new lines from the beginning and the end of the string while preserving those in between.
+  answer = answer.replace(/^\s+|\s+$/g, "");
 
-  console.log(`AI capitalCity === 🏛️ 🏛️ 🏛️  -${capitalCity}-`);
-  return `🦄 🦄 🦄 The capital of ${wine} is ${capitalCity}`;
+  console.log(`🧆 🧆 🧆 Wine pairing: -${answer}-`);
+  return answer;
 };
