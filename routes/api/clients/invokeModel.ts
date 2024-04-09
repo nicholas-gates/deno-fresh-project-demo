@@ -6,9 +6,11 @@ import {
   BedrockRuntimeClient,
 } from "https://esm.sh/@aws-sdk/client-bedrock-runtime";
 
-export interface AiResponse {
-  generation: string;
-}
+import { AiModelResponse } from "../types/AiModelResponse.ts";
+
+// export interface AiResponse {
+//   generation: string;
+// }
 
 const env = await load();
 const accessKeyId = env["AWS_ACCESS_KEY"];
@@ -28,7 +30,7 @@ const client = new BedrockRuntimeClient(config);
 
 export const invokeModel = async (
   prompt: string,
-): Promise<string> => {
+): Promise<AiModelResponse> => {
   console.log("🔵 🔵 🔵 invokeModel ...");
 
   console.log(`prompt ==== 🏛️ 🏛️ 🏛️ -${prompt}-`);
@@ -51,5 +53,5 @@ export const invokeModel = async (
   const response = await client.send(command);
   const responseJson = JSON.parse(new TextDecoder().decode(response.body));
 
-  return responseJson.generation;
+  return JSON.parse(responseJson.generation);
 };

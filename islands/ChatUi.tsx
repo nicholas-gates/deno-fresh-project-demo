@@ -1,61 +1,88 @@
 import { h } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { WebSocketService } from "../utils/websocketUtil.ts";
+import { AiModelResponse } from "../routes/api/types/AiModelResponse.ts";
 
 interface Message {
   author: "user" | "system";
-  type: string;
+  type: "appetizerPairing" | "entreePairing" | "error";
   content: string;
+}
+
+interface Stage {
+  current: "askWine" | "askEntreePairing" | "showEntreePairing";
+  wine?: string;
+  appetizerName?: string;
 }
 
 const ChatUI = () => {
   const [messages, setMessages] = useState<Message[]>([{
     author: "system",
-    type: "winePairing",
-    content:
-      "Type in your favorite wine and I'll recommend a good a pairing! 🍷",
+    type: "appetizerPairing",
+    content: "Type in your favorite wine and I'll recommend a good appetizer pairing! 🍷",
   }]);
 
   const [input, setInput] = useState("");
-  // Correctly initializing the WebSocketService state with null and specifying the type it will hold
   const [wsService, setWsService] = useState<WebSocketService | null>(null);
+  const [stage, setStage] = useState<Stage>({ current: "askWine" });
 
   useEffect(() => {
-    // Ensuring WebSocketService is instantiated correctly and setting the state
-    const ws = new WebSocketService(
-      "ws://localhost:8000/api/ai-chat",
-      (message: string) => {
-        setMessages((
-          msgs,
-        ) => [...msgs, {
+    const ws = new WebSocketService("ws://localhost:8000/api/ai-chat", (message: string) => {
+      const response: AiModelResponse = JSON.parse(message);
+
+      if (response.type === "appetizerPairing") {
+        setMessages(msgs => [...msgs, {
           author: "system",
-          type: "winePairing",
-          content: message,
+          type: response.type,
+          content: `${response.name}: ${response.description}`,
         }]);
-      },
-    );
+        setStage({ current: "askEntreePairing", wine: stage.wine, appetizerName: response.name });
+      } else if (response.type === "entreePairing") {
+        setMessages(msgs => [...msgs, {
+          author: "system",
+          type: response.type,
+          content: `${response.name}: ${response.description}`,
+        }]);
+        // Assuming the conversation ends here, or set to another stage as needed
+      }
+    });
+
     setWsService(ws);
 
-    // Make sure to clean up on component unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
+    return () => ws.close();
+  }, [stage.wine]); // Depend on wine to re-instantiate WebSocketService only if wine changes
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const newMessage: Message = {
-      author: "user",
-      type: "winePairing",
-      content: input
-    };
+    debugger;
+    
+    let newMessage: Message;
+    switch (stage.current) {
+      case "askWine":
+        newMessage = {
+          author: "user",
+          type: "appetizerPairing",
+          content: input,
+        };
+        setStage({ current: "askEntreePairing", wine: input });
+        break;
+      case "askEntreePairing":
+        newMessage = {
+          author: "user",
+          type: "entreePairing",
+          content: `Would you like a dinner pairing for ${input} and ${stage.appetizerName}?`,
+        };
+        // Here, you might want to adjust the logic based on how the user can respond to the dinner pairing question.
+        break;
+      default:
+        newMessage = { author: "user", type: "appetizerPairing", content: input }; // Fallback, should not happen
+    }
 
-    setMessages((
-      msgs,
-    ) => [...msgs, newMessage]);
+    console.log(`Current Stage: ${stage.current}`)
 
+    setMessages(msgs => [...msgs, newMessage]);
     wsService?.sendMessage(newMessage);
     setInput("");
   };
