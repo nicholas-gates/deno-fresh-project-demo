@@ -12,15 +12,5 @@ export const getEntreePairing = async (wine: string, appetizer: string): Promise
 
   console.log("🤖 🤖 🤖 invokeModel Response: ", response);
 
-  // let answer = response;
-
-  // // remove all whitespace from the beginning and the end of the string while preserving those between words.
-  // answer = answer.trim();
-  // // remove all new lines from the beginning and the end of the string while preserving those in between.
-  // answer = answer.replace(/^\s+|\s+$/g, "");
-
-  // console.log(`🧆 🧆 🧆 entree pairing: -${answer}-`);
-  // return answer;
-
   return response;
 };

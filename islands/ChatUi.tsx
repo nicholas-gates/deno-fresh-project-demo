@@ -57,7 +57,7 @@ const ChatUI = () => {
     if (!input.trim()) return;
 
     debugger;
-    
+
     let newMessage: Message;
     switch (stage.current) {
       case "askWine":
@@ -72,7 +72,7 @@ const ChatUI = () => {
         newMessage = {
           author: "user",
           type: "entreePairing",
-          content: `Would you like a dinner pairing for ${input} and ${stage.appetizerName}?`,
+          content: `Would you like a dinner pairing for ${stage.wine} and ${stage.appetizerName}?`,
         };
         // Here, you might want to adjust the logic based on how the user can respond to the dinner pairing question.
         break;

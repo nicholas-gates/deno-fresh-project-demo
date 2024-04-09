@@ -53,5 +53,13 @@ export const invokeModel = async (
   const response = await client.send(command);
   const responseJson = JSON.parse(new TextDecoder().decode(response.body));
 
+  const mockResponseJson = `{
+  generation: "\n\n{\n\"name\": \"Crab and Avocado Timbale\",\n\"description\": \"A creamy and delicate appetizer featuring fresh crab meat, avocado, and herbs, all wrapped in a crispy pastry shell. The richness of the crab and avocado is balanced by the bright, citrusy notes in the Sauvignon Blanc.\"\n}",
+  prompt_token_count: 131,
+  generation_token_count: 90,
+  stop_reason: "stop",
+}`;
+
   return JSON.parse(responseJson.generation);
+  // return JSON.parse(mockResponseJson);
 };

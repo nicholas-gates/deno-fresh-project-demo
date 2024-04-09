@@ -11,13 +11,5 @@ export const getAppetizerPairing = async (wine: string): Promise<AiModelResponse
   response.type = "appetizerPairing";
   console.log("🤖 🤖 🤖 invokeModel Response: ", response);
 
-  // let answer = response;
-
-  // // remove all whitespace from the beginning and the end of the string while preserving those between words.
-  // answer = answer.trim();
-  // // remove all new lines from the beginning and the end of the string while preserving those in between.
-  // answer = answer.replace(/^\s+|\s+$/g, "");
-
-  // console.log(`🧆 🧆 🧆 Wine pairing: -${answer}-`);
   return response;
 };
