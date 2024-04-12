@@ -3,88 +3,113 @@ import { useEffect, useState } from "preact/hooks";
 import { WebSocketService } from "../utils/websocketUtil.ts";
 import { AiModelResponse } from "../routes/api/types/AiModelResponse.ts";
 
-interface Message {
-  author: "user" | "system";
-  type: "appetizerPairing" | "entreePairing" | "error";
+interface UiState {
+  stage: "askWine" | "askAppetizerPairing" | "askEntreePairing";
+  prompt: string;
+  wine?: string;
+  appetizer?: string;
+  entree?: string;
+}
+
+interface UiMessage {
+  author: "system" | "user";
+  type: "askWine" | "askAppetizerPairing" | "askEntreePairing" | "error";
   content: string;
 }
 
-interface Stage {
-  current: "askWine" | "askEntreePairing" | "showEntreePairing";
-  wine?: string;
-  appetizerName?: string;
+interface ApiRequest {
+  type: "setWineGetAppetizer" | "setAppetizerGetEntree";
+  prompt: string;
+  promptResponse: string;
 }
 
 const ChatUI = () => {
-  const [messages, setMessages] = useState<Message[]>([{
-    author: "system",
-    type: "appetizerPairing",
-    content: "Type in your favorite wine and I'll recommend a good appetizer pairing! 🍷",
-  }]);
+  const [uiState, setUiState] = useState<UiState>({
+    stage: "askWine",
+    prompt:
+      "Type in your favorite wine and I'll recommend a good appetizer pairing! 🍷",
+  });
 
-  const [input, setInput] = useState("");
+  const [userInput, setUserInput] = useState<string>("");
+  const [messages, setMessages] = useState<UiMessage[]>([]);
   const [wsService, setWsService] = useState<WebSocketService | null>(null);
-  const [stage, setStage] = useState<Stage>({ current: "askWine" });
 
   useEffect(() => {
-    const ws = new WebSocketService("ws://localhost:8000/api/ai-chat", (message: string) => {
-      const response: AiModelResponse = JSON.parse(message);
+    const ws = new WebSocketService(
+      "ws://localhost:8000/api/ai-chat",
+      (apiResponse: string) => {
+        const response: AiModelResponse = JSON.parse(apiResponse);
 
-      if (response.type === "appetizerPairing") {
-        setMessages(msgs => [...msgs, {
-          author: "system",
-          type: response.type,
-          content: `${response.name}: ${response.description}`,
-        }]);
-        setStage({ current: "askEntreePairing", wine: stage.wine, appetizerName: response.name });
-      } else if (response.type === "entreePairing") {
-        setMessages(msgs => [...msgs, {
-          author: "system",
-          type: response.type,
-          content: `${response.name}: ${response.description}`,
-        }]);
-        // Assuming the conversation ends here, or set to another stage as needed
-      }
-    });
+        if (response.type === "appetizerPairing") {
+          setUiState({
+            stage: "askEntreePairing",
+            prompt:
+              `Your appetizer pairing is ${response.name}. Would you like to see an entree pairing?`,
+            wine: uiState.wine,
+            appetizer: response.name,
+          });
+        } else if (response.type === "entreePairing") {
+          setUiState({
+            stage: "askWine",
+            prompt:
+              `Your entree pairing is ${response.name}. Type in another wine to start again.`,
+            wine: undefined,
+            appetizer: undefined,
+            entree: response.name,
+          });
+        }
+
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            author: "system",
+            type: response.type as
+              | "askWine"
+              | "askAppetizerPairing"
+              | "askEntreePairing",
+            content: uiState.prompt,
+          },
+        ]);
+      },
+    );
 
     setWsService(ws);
+  }, []);
 
-    return () => ws.close();
-  }, [stage.wine]); // Depend on wine to re-instantiate WebSocketService only if wine changes
-
-  const handleSubmit = (e: Event) => {
+  const handleUserMessage = (e: Event) => {
     e.preventDefault();
-    if (!input.trim()) return;
 
-    debugger;
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        author: "user",
+        type: uiState.stage as
+          | "askWine"
+          | "askAppetizerPairing"
+          | "askEntreePairing",
+        content: userInput,
+      },
+    ]);
 
-    let newMessage: Message;
-    switch (stage.current) {
-      case "askWine":
-        newMessage = {
-          author: "user",
-          type: "appetizerPairing",
-          content: input,
-        };
-        setStage({ current: "askEntreePairing", wine: input });
-        break;
-      case "askEntreePairing":
-        newMessage = {
-          author: "user",
-          type: "entreePairing",
-          content: `Would you like a dinner pairing for ${stage.wine} and ${stage.appetizerName}?`,
-        };
-        // Here, you might want to adjust the logic based on how the user can respond to the dinner pairing question.
-        break;
-      default:
-        newMessage = { author: "user", type: "appetizerPairing", content: input }; // Fallback, should not happen
+    if (uiState.stage === "askWine") {
+      wsService?.sendMessage(
+        {
+          type: "setWineGetAppetizer",
+          prompt: uiState.prompt,
+          promptResponse: userInput,
+        } as ApiRequest,
+      );
+
+      setUiState((prevState) => ({ ...prevState, wine: userInput }));
+    } else if (uiState.stage === "askAppetizerPairing") {
+      wsService?.sendMessage(
+        {
+          type: "setAppetizerGetEntree",
+          prompt: uiState.prompt,
+          promptResponse: userInput,
+        } as ApiRequest,
+      );
     }
-
-    console.log(`Current Stage: ${stage.current}`)
-
-    setMessages(msgs => [...msgs, newMessage]);
-    wsService?.sendMessage(newMessage);
-    setInput("");
   };
 
   return (
@@ -101,11 +126,12 @@ const ChatUI = () => {
           </li>
         ))}
       </ul>
-      <form onSubmit={handleSubmit as any} class="chat-input-form mt-4 flex">
+
+      <form onSubmit={handleUserMessage as any} class="chat-input-form mt-4 flex">
         <input
           type="text"
-          value={input}
-          onChange={(e: any) => setInput(e.target.value)}
+          value={userInput}
+          onChange={(e: any) => setUserInput(e.target.value)}
           placeholder="Type your message here..."
           class="chat-input flex-1 border p-2 rounded-l-lg"
         />
