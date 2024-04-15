@@ -49,17 +49,17 @@ export const invokeModel = async (
     "body": body,
   };
 
-  const command = new InvokeModelCommand(input);
-  const response = await client.send(command);
-  const responseJson = JSON.parse(new TextDecoder().decode(response.body));
+  // const command = new InvokeModelCommand(input);
+  // const response = await client.send(command);
+  // const responseJson = JSON.parse(new TextDecoder().decode(response.body));
+  // return JSON.parse(responseJson.generation);
 
-  const mockResponseJson = `{
-  generation: "\n\n{\n\"name\": \"Crab and Avocado Timbale\",\n\"description\": \"A creamy and delicate appetizer featuring fresh crab meat, avocado, and herbs, all wrapped in a crispy pastry shell. The richness of the crab and avocado is balanced by the bright, citrusy notes in the Sauvignon Blanc.\"\n}",
-  prompt_token_count: 131,
-  generation_token_count: 90,
-  stop_reason: "stop",
-}`;
+  const mockResponseJson = {
+    type: "appetizerPairing",
+    name: "Crab and Avocado Timbale",
+    description: "A delicate timbale of lump crab meat and avocado, surrounded by a zesty lemon butter sauce and garnished with fresh herbs. The richness of the crab and creaminess of the avocado are perfectly balanced by the bright, citrusy notes of the Sauvignon Blanc.",
+  }
 
-  return JSON.parse(responseJson.generation);
-  // return JSON.parse(mockResponseJson);
+  return mockResponseJson;
+//   return JSON.parse(mockResponseJson);
 };

@@ -23,6 +23,12 @@ interface ApiRequest {
   promptResponse: string;
 }
 
+// interface ApiResponse {
+//   description: string;
+//   name: string;
+//   type: "appetizerPairing" | "entreePairing" | "error";
+// }
+
 const ChatUI = () => {
   const [uiState, setUiState] = useState<UiState>({
     stage: "askWine",
@@ -40,36 +46,40 @@ const ChatUI = () => {
       (apiResponse: string) => {
         const response: AiModelResponse = JSON.parse(apiResponse);
 
-        if (response.type === "appetizerPairing") {
-          setUiState({
-            stage: "askEntreePairing",
-            prompt:
-              `Your appetizer pairing is ${response.name}. Would you like to see an entree pairing?`,
-            wine: uiState.wine,
-            appetizer: response.name,
-          });
-        } else if (response.type === "entreePairing") {
-          setUiState({
-            stage: "askWine",
-            prompt:
-              `Your entree pairing is ${response.name}. Type in another wine to start again.`,
-            wine: undefined,
-            appetizer: undefined,
-            entree: response.name,
-          });
-        }
+const updateUiAndMessages = (newState, systemMessageContent, messageType) => {
+  setUiState(newState);
+  setMessages(prevMessages => [
+    ...prevMessages,
+    createSystemMessage(systemMessageContent, messageType)
+  ]);
+};
 
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            author: "system",
-            type: response.type as
-              | "askWine"
-              | "askAppetizerPairing"
-              | "askEntreePairing",
-            content: uiState.prompt,
-          },
-        ]);
+const createSystemMessage = (content, type) => ({
+  author: "system",
+  type,
+  content
+});
+
+// Use these functions in your response handling logic
+if (response.type === "error") {
+  const prompt = "Oops! I couldn't find a pairing for that. Type in another wine to start again.";
+  updateUiAndMessages({
+    stage: "askWine",
+    prompt,
+    wine: undefined,
+    appetizer: undefined,
+    entree: undefined,
+  }, prompt, "askWine");
+} else if (response.type === "appetizerPairing") {
+  const prompt = `Your appetizer pairing is ${response.name}. Would you like to see an entree pairing?`;
+  updateUiAndMessages({
+    stage: "askEntreePairing",
+    prompt,
+    wine: uiState.wine,
+    appetizer: response.name,
+  }, prompt, "askAppetizerPairing");
+} else if (response.type === "entree
+
       },
     );
 
@@ -127,7 +137,10 @@ const ChatUI = () => {
         ))}
       </ul>
 
-      <form onSubmit={handleUserMessage as any} class="chat-input-form mt-4 flex">
+      <form
+        onSubmit={handleUserMessage as any}
+        class="chat-input-form mt-4 flex"
+      >
         <input
           type="text"
           value={userInput}
