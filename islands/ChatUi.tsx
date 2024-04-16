@@ -23,12 +23,6 @@ interface ApiRequest {
   promptResponse: string;
 }
 
-// interface ApiResponse {
-//   description: string;
-//   name: string;
-//   type: "appetizerPairing" | "entreePairing" | "error";
-// }
-
 const ChatUI = () => {
   const [uiState, setUiState] = useState<UiState>({
     stage: "askWine",
@@ -44,42 +38,45 @@ const ChatUI = () => {
     const ws = new WebSocketService(
       "ws://localhost:8000/api/ai-chat",
       (apiResponse: string) => {
+        let newState = uiState;
         const response: AiModelResponse = JSON.parse(apiResponse);
 
-const updateUiAndMessages = (newState, systemMessageContent, messageType) => {
-  setUiState(newState);
-  setMessages(prevMessages => [
-    ...prevMessages,
-    createSystemMessage(systemMessageContent, messageType)
-  ]);
-};
+        if (response.type === "appetizerPairing") {
+          newState = {
+            stage: "askEntreePairing",
+            prompt:
+              `Your appetizer pairing is ${response.name}. Would you like to see an entree pairing?`,
+            wine: uiState.wine,
+            appetizer: response.name,
+          };
 
-const createSystemMessage = (content, type) => ({
-  author: "system",
-  type,
-  content
-});
+          setUserInput("Yes");
+        } else if (response.type === "entreePairing") {
+          newState = {
+            stage: "askWine",
+            prompt:
+              `Your entree pairing is ${response.name}. Type in another wine to start again.`,
+            wine: undefined,
+            appetizer: undefined,
+            entree: response.name,
+          };
 
-// Use these functions in your response handling logic
-if (response.type === "error") {
-  const prompt = "Oops! I couldn't find a pairing for that. Type in another wine to start again.";
-  updateUiAndMessages({
-    stage: "askWine",
-    prompt,
-    wine: undefined,
-    appetizer: undefined,
-    entree: undefined,
-  }, prompt, "askWine");
-} else if (response.type === "appetizerPairing") {
-  const prompt = `Your appetizer pairing is ${response.name}. Would you like to see an entree pairing?`;
-  updateUiAndMessages({
-    stage: "askEntreePairing",
-    prompt,
-    wine: uiState.wine,
-    appetizer: response.name,
-  }, prompt, "askAppetizerPairing");
-} else if (response.type === "entree
+          setUserInput("Wine...");
+        }
 
+        setUiState(newState);
+
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            author: "system",
+            type: response.type as
+              | "askWine"
+              | "askAppetizerPairing"
+              | "askEntreePairing",
+            content: newState.prompt,
+          },
+        ]);
       },
     );
 
@@ -100,6 +97,9 @@ if (response.type === "error") {
         content: userInput,
       },
     ]);
+
+    // Change the userInput to "Thinking..." right after sending the message
+    setUserInput("Thinking...");
 
     if (uiState.stage === "askWine") {
       wsService?.sendMessage(

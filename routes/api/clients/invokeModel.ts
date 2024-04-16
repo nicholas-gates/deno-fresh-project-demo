@@ -1,10 +1,10 @@
-import { InvokeModelCommand } from "https://esm.sh/@aws-sdk/client-bedrock-runtime";
+import { InvokeModelCommand, BedrockRuntimeClient } from "https://esm.sh/@aws-sdk/client-bedrock-runtime@3.549.0";
 
 import { load } from "https://deno.land/std@0.221.0/dotenv/mod.ts";
 
-import {
-  BedrockRuntimeClient,
-} from "https://esm.sh/@aws-sdk/client-bedrock-runtime";
+// import {
+//   BedrockRuntimeClient,
+// } from "https://esm.sh/@aws-sdk/client-bedrock-runtime";
 
 import { AiModelResponse } from "../types/AiModelResponse.ts";
 
@@ -54,7 +54,7 @@ export const invokeModel = async (
   // const responseJson = JSON.parse(new TextDecoder().decode(response.body));
   // return JSON.parse(responseJson.generation);
 
-  const mockResponseJson = {
+  const mockResponseJson: AiModelResponse = {
     type: "appetizerPairing",
     name: "Crab and Avocado Timbale",
     description: "A delicate timbale of lump crab meat and avocado, surrounded by a zesty lemon butter sauce and garnished with fresh herbs. The richness of the crab and creaminess of the avocado are perfectly balanced by the bright, citrusy notes of the Sauvignon Blanc.",

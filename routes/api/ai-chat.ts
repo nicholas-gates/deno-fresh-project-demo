@@ -6,12 +6,12 @@ import { AiModelResponse } from "./types/AiModelResponse.ts";
 
 interface IncomingWsMessage {
   author: "user" | "system";
-  type: string;
-  content: string;
+  type: "setWineGetAppetizer" | "setAppetizerGetEntree";
+  prompt: string;
+  promptResponse: string;
 }
 
 let socket: WebSocket;
-// let response: Response;
 
 export const handler: Handlers = {
   GET: (req) => {
@@ -41,15 +41,14 @@ const handleWebSocket = (request: Request): Promise<Response> => {
   return Promise.resolve(response);
 };
 
-const handleMessage = async ({ type, content }: IncomingWsMessage): Promise<AiModelResponse> => {
-  console.log(`Handling message: ${type}, ${content}`);
+const handleMessage = async ({ type, prompt, promptResponse }: IncomingWsMessage): Promise<AiModelResponse> => {
+  console.log(`Handling incoming message: ${type}, ${promptResponse}`);
+
   switch (type) {
-    // case "countryName":
-    //   return getCapitalCity(content);
-    case "appetizerPairing":
-      return await getAppetizerPairing(content);
-    case "entreePairing":
-      return await getEntreePairing(content, "cheese"); // Handle entree pairing messages
+    case "setWineGetAppetizer":
+      return await getAppetizerPairing(prompt, promptResponse);
+    case "setAppetizerGetEntree":
+      return await getEntreePairing(prompt, promptResponse); // Handle entree pairing messages
     default:
       return { name: "Error", description: "Invalid message type received", type: "error"};
   }
