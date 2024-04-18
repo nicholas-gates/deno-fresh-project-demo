@@ -102,6 +102,8 @@ const ChatUI = () => {
     setUserInput("Thinking...");
 
     if (uiState.stage === "askWine") {
+      setUiState((prevState) => ({ ...prevState, wine: userInput }));
+      
       wsService?.sendMessage(
         {
           type: "setWineGetAppetizer",
