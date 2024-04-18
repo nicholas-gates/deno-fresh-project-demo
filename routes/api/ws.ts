@@ -62,5 +62,4 @@ const handleMessage = async (type: string, value: string): Promise<string> => {
     default:
       return "Invalid message type received";
   }
-
 };

@@ -1,16 +1,18 @@
 // islands/WebSocketForm.tsx
 
 /** @jsxImportSource preact */
-import { useState } from 'preact/hooks';
+import { useState } from "preact/hooks";
 
 export default function WebSocketForm() {
-  const [message, setMessage] = useState('');
-  const [response, setResponse] = useState('');
+  const [message, setMessage] = useState("");
+  const [response, setResponse] = useState("");
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     // Establish a WebSocket connection
-    const socket = new WebSocket('wss://deno-fresh-project-demo-086adyegr5ws.deno.dev/api/ws');
+    const socket = new WebSocket(
+      "wss://deno-fresh-project-demo-086adyegr5ws.deno.dev/api/ws",
+    );
 
     socket.onopen = () => {
       // Send the message when the connection is open
@@ -24,8 +26,8 @@ export default function WebSocketForm() {
     };
 
     socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      setResponse('Error connecting to WebSocket server.');
+      console.error("WebSocket error:", error);
+      setResponse("Error connecting to WebSocket server.");
     };
   };
 

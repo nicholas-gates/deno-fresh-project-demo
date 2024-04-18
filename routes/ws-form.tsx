@@ -1,7 +1,7 @@
 // routes/form.tsx
 
 /** @jsxImportSource preact */
-import WebSocketForm from '../islands/WebSocketForm.tsx';
+import WebSocketForm from "../islands/WebSocketForm.tsx";
 
 export default function FormPage() {
   return (

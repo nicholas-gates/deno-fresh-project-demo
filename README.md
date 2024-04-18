@@ -14,3 +14,9 @@ deno task start
 ```
 
 This will watch the project directory and restart as necessary.
+
+# Fix Missing Modules
+- delete the node_modules folder
+```bash
+rm -rf node_modules
+```
