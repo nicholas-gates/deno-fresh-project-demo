@@ -20,3 +20,23 @@ This will watch the project directory and restart as necessary.
 ```bash
 rm -rf node_modules
 ```
+
+# VSCode Debug Configuration
+```json
+    {
+        "request": "launch",
+        "name": "Start Deno Server",
+        "type": "node",
+        "program": "dev.ts",
+        "cwd": "${workspaceFolder}",
+        "runtimeExecutable": "/Users/ngates/.deno/bin/deno",
+        "runtimeArgs": [
+            "run",
+            "--inspect-wait",
+            "--allow-all",
+            "--watch=static/,routes/",
+        ],
+        "attachSimplePort": 9229,
+        "restart": true
+    }
+```
