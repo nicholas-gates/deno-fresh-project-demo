@@ -1,7 +1,7 @@
 import { Handlers } from "$fresh/server.ts";
 
 import { ChatOpenAI, OpenAI } from "https://esm.sh/@langchain/openai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { ChatPromptTemplate, PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import {
   RunnableConfig,
@@ -10,13 +10,19 @@ import {
 import { ChatPromptValueInterface } from "https://esm.sh/v135/@langchain/core@0.1.57/dist/prompt_values.js";
 import { AIMessageChunk } from "https://esm.sh/v135/@langchain/core@0.1.57/messages.js";
 
-// const getOpenAiModel = (): ChatOpenAI => {
-//   return new ChatOpenAI({
-//     apiKey: Deno.env.get("OPENAI_API_KEY")!,
-//   });
-// }
-
 type EnumModelNames = "OpenAi" | "OpenAiChat";
+
+export const handler: Handlers = {
+  async GET(_req) {
+    // const apiresponse = await getJokeResponse();
+    // const apiresponse = await getInvokeLlmResponse();
+    const apiresponse = await getTemplateOutput();
+
+    return new Response(JSON.stringify(apiresponse), {
+      headers: { "Content-Type": "application/json" },
+    });
+  },
+};
 
 const getModel = (modelName: EnumModelNames): OpenAI | ChatOpenAI => {
   switch (modelName) {
@@ -33,17 +39,6 @@ const getModel = (modelName: EnumModelNames): OpenAI | ChatOpenAI => {
         apiKey: Deno.env.get("OPENAI_API_KEY")!,
       });
   }
-};
-
-export const handler: Handlers = {
-  async GET(_req) {
-    // const apiresponse = await getJokeResponse();
-    const apiresponse = await getInvokeLlmResponse();
-
-    return new Response(JSON.stringify(apiresponse), {
-      headers: { "Content-Type": "application/json" },
-    });
-  },
 };
 
 const getJokeResponse = async () => {
@@ -70,10 +65,15 @@ const getJokeResponse = async () => {
   return apiresponse;
 };
 
+/**
+ * Demo for simple ask-response model
+ * @returns
+ */
 const getInvokeLlmResponse = async () => {
   const model = getModel("OpenAi");
 
-  const prompt = "What would be a good company name a company that makes colorful socks?"
+  const prompt =
+    "What would be a good company name a company that makes colorful socks?";
 
   //Calls out to the model's (OpenAI's) endpoint passing the prompt. This call returns a string
   const response = await model.invoke(
@@ -82,6 +82,25 @@ const getInvokeLlmResponse = async () => {
 
   return {
     prompt,
-    response
-  }
+    response,
+  };
+};
+
+const getTemplateOutput = async () => {
+  //Create the template. The template is actually a "parameterized prompt". A "parameterized prompt" is a prompt in which the input parameter names are used and the parameter values are supplied from external input
+  const template = "What is a good name for a company that makes {product}?";
+
+  const mockUserInput = "colorful socks";
+  //Instantiate "PromptTemplate" passing the prompt template string initialized above and a list of variable names the final prompt template will expect
+  const prompt = new PromptTemplate({ template, inputVariables: ["product"] });
+
+  //Create a new prompt from the combination of the template and input variables. Pass the value for the variable name that was sent in the "inputVariables" list passed to "PromptTemplate" initialization call
+  const res = await prompt.format({ product: mockUserInput });
+  console.log({ res });
+
+  return {
+    template,
+    mockUserInput,
+    res,
+  };
 };
