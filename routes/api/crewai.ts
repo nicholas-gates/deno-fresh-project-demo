@@ -3,12 +3,10 @@ import { Handlers } from "$fresh/server.ts";
 import { ChatOpenAI, OpenAI } from "https://esm.sh/@langchain/openai";
 import { ChatPromptTemplate, PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import {
-  RunnableConfig,
-  RunnableInterface,
-} from "https://esm.sh/v135/@langchain/core@0.1.57/runnables.js";
-import { ChatPromptValueInterface } from "https://esm.sh/v135/@langchain/core@0.1.57/dist/prompt_values.js";
-import { AIMessageChunk } from "https://esm.sh/v135/@langchain/core@0.1.57/messages.js";
+
+// TODO: Need to figure out how to import this:
+import { LLMChain } from "npm:langchain/chains";
+
 
 type EnumModelNames = "OpenAi" | "OpenAiChat";
 
@@ -16,7 +14,8 @@ export const handler: Handlers = {
   async GET(_req) {
     // const apiresponse = await getJokeResponse();
     // const apiresponse = await getInvokeLlmResponse();
-    const apiresponse = await getTemplateOutput();
+    // const apiresponse = await getTemplateOutput();
+    const apiresponse = await getChainOutput();
 
     return new Response(JSON.stringify(apiresponse), {
       headers: { "Content-Type": "application/json" },
@@ -101,6 +100,30 @@ const getTemplateOutput = async () => {
   return {
     template,
     mockUserInput,
+    res,
+  };
+};
+
+export const getChainOutput = async () => {
+  //Instantiante the OpenAI model
+  //Pass the "temperature" parameter which controls the RANDOMNESS of the model's output. A lower temperature will result in more predictable output, while a higher temperature will result in more random output. The temperature parameter is set between 0 and 1, with 0 being the most predictable and 1 being the most random
+  const model = getModel("OpenAiChat");
+
+  //Create the template. The template is actually a "parameterized prompt". A "parameterized prompt" is a prompt in which the input parameter names are used and the parameter values are supplied from external input
+  const template = "What is a good name for a company that makes {product}?";
+
+  //Instantiate "PromptTemplate" passing the prompt template string initialized above and a list of variable names the final prompt template will expect
+  const prompt = new PromptTemplate({ template, inputVariables: ["product"] });
+
+  //Instantiate LLMChain, which consists of a PromptTemplate and an LLM. Pass the result from the PromptTemplate and the OpenAI LLM model
+  const chain = new LLMChain({ llm: model, prompt });
+
+  //Run the chain. Pass the value for the variable name that was sent in the "inputVariables" list passed to "PromptTemplate" initialization call
+  const res = await chain.call({ product: "colorful socks" });
+  console.log({ res });
+
+  return {
+    template,
     res,
   };
 };
