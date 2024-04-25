@@ -1,12 +1,10 @@
 import { Handlers } from "$fresh/server.ts";
 
-import { ChatOpenAI, OpenAI } from "https://esm.sh/@langchain/openai";
+import { ChatOpenAI, OpenAI } from "@langchain/openai";
 import { ChatPromptTemplate, PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
-// TODO: Need to figure out how to import this:
 import { LLMChain } from "npm:langchain/chains";
-
 
 type EnumModelNames = "OpenAi" | "OpenAiChat";
 

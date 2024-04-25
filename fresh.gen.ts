@@ -8,11 +8,12 @@ import * as $about from "./routes/about.tsx";
 import * as $ai_wine_chat from "./routes/ai-wine-chat.tsx";
 import * as $api_ai_chat from "./routes/api/ai-chat.ts";
 import * as $api_clients_invokeModel from "./routes/api/clients/invokeModel.ts";
-import * as $api_crewai from "./routes/api/crewai.ts";
 import * as $api_handlers_getAppetizerPairing from "./routes/api/handlers/getAppetizerPairing.ts";
 import * as $api_handlers_getCapitalCity from "./routes/api/handlers/getCapitalCity.ts";
 import * as $api_handlers_getEntreePairing from "./routes/api/handlers/getEntreePairing.ts";
 import * as $api_joke from "./routes/api/joke.ts";
+import * as $api_langagent from "./routes/api/langagent.ts";
+import * as $api_langchain from "./routes/api/langchain.ts";
 import * as $api_random_uuid from "./routes/api/random-uuid.ts";
 import * as $api_types_AiModelResponse from "./routes/api/types/AiModelResponse.ts";
 import * as $api_ws from "./routes/api/ws.ts";
@@ -37,12 +38,13 @@ const manifest = {
     "./routes/ai-wine-chat.tsx": $ai_wine_chat,
     "./routes/api/ai-chat.ts": $api_ai_chat,
     "./routes/api/clients/invokeModel.ts": $api_clients_invokeModel,
-    "./routes/api/crewai.ts": $api_crewai,
     "./routes/api/handlers/getAppetizerPairing.ts":
       $api_handlers_getAppetizerPairing,
     "./routes/api/handlers/getCapitalCity.ts": $api_handlers_getCapitalCity,
     "./routes/api/handlers/getEntreePairing.ts": $api_handlers_getEntreePairing,
     "./routes/api/joke.ts": $api_joke,
+    "./routes/api/langagent.ts": $api_langagent,
+    "./routes/api/langchain.ts": $api_langchain,
     "./routes/api/random-uuid.ts": $api_random_uuid,
     "./routes/api/types/AiModelResponse.ts": $api_types_AiModelResponse,
     "./routes/api/ws.ts": $api_ws,
